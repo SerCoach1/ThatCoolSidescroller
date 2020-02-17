@@ -2,9 +2,12 @@
 
 #pragma once
 
+#include "ThatCoolSideScroller/Public/Components/HealthComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ThatCoolSideScroller/Public/Components/StaminaComponent.h"
 #include "ThatCoolSideScrollerCharacter.generated.h"
+
 
 UCLASS(config=Game)
 class AThatCoolSideScrollerCharacter : public ACharacter
@@ -34,6 +37,11 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
 
+
+	void Jump() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+	UStaminaComponent* staminaReference;
 
 public:
 	AThatCoolSideScrollerCharacter();

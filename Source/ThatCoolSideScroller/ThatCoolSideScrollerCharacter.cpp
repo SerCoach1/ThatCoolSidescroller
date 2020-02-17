@@ -6,6 +6,8 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/Engine.h"
+
 
 AThatCoolSideScrollerCharacter::AThatCoolSideScrollerCharacter()
 {
@@ -57,6 +59,18 @@ void AThatCoolSideScrollerCharacter::SetupPlayerInputComponent(class UInputCompo
 
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &AThatCoolSideScrollerCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &AThatCoolSideScrollerCharacter::TouchStopped);
+}
+
+void AThatCoolSideScrollerCharacter::Jump()
+{
+	if (staminaReference->StaminaJumpCost(GetCharacterMovement()->IsFalling())) {
+		ACharacter::Jump();
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Red, FString::Printf(TEXT("CANT JUMP")));
+	}
+
 }
 
 void AThatCoolSideScrollerCharacter::MoveRight(float Value)

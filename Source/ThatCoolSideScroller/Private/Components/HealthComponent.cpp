@@ -23,7 +23,6 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDam
 
 	health = FMath::Clamp(health - Damage, minHealth, defaultHealth);
 
-	GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Red, FString::Printf(TEXT("health: %f"),health));
 }
 
 // Called when the game starts

@@ -46,6 +46,7 @@ void UStaminaComponent::StartStaminaRegenTimer()
 void UStaminaComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	StartStaminaRegenTimer();
 }
 
 

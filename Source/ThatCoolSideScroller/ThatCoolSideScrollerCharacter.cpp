@@ -43,6 +43,10 @@ AThatCoolSideScrollerCharacter::AThatCoolSideScrollerCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->MaxFlySpeed = 600.f;
 
+
+	StaminaComponent = CreateDefaultSubobject<UStaminaComponent>(TEXT("StaminaComponent"));
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -63,14 +67,12 @@ void AThatCoolSideScrollerCharacter::SetupPlayerInputComponent(class UInputCompo
 
 void AThatCoolSideScrollerCharacter::Jump()
 {
-	if (staminaReference->StaminaJumpCost(GetCharacterMovement()->IsFalling())) {
+
+	//AThatCoolSideScrollerCharacter::FindComponentByClass<UStaminaComponent>() //that's how to find component
+
+	if (StaminaComponent->StaminaJumpCost(GetCharacterMovement()->IsFalling()) && StaminaComponent != nullptr) {
 		ACharacter::Jump();
 	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Red, FString::Printf(TEXT("CANT JUMP")));
-	}
-
 }
 
 void AThatCoolSideScrollerCharacter::MoveRight(float Value)

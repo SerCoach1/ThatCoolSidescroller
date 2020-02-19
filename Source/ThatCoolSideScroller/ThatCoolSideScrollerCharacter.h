@@ -22,6 +22,13 @@ class AThatCoolSideScrollerCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	/** Player's Stamina */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stamina, meta = (AllowPrivateAccess = "true"))
+	class UStaminaComponent* StaminaComponent;
+
+	/** Player's Health */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stamina, meta = (AllowPrivateAccess = "true"))
+		class UHealthComponent* HealthComponent;
 protected:
 
 	/** Called for side to side input */
@@ -37,11 +44,10 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
 
-
 	void Jump() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
-	UStaminaComponent* staminaReference;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+	UStaminaComponent* staminaReference;*/
 
 public:
 	AThatCoolSideScrollerCharacter();

@@ -57,7 +57,7 @@ AThatCoolSideScrollerCharacter::AThatCoolSideScrollerCharacter()
 void AThatCoolSideScrollerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AThatCoolSideScrollerCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AThatCoolSideScrollerCharacter::MoveRight);
 

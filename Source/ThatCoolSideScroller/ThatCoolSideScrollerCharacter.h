@@ -29,6 +29,7 @@ class AThatCoolSideScrollerCharacter : public ACharacter
 	/** Player's Health */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stamina, meta = (AllowPrivateAccess = "true"))
 		class UHealthComponent* HealthComponent;
+
 protected:
 
 	/** Called for side to side input */

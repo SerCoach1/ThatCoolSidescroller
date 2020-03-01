@@ -4,21 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/SphereComponent.h"
 #include "Enemy.generated.h"
 
 UCLASS()
 class THATCOOLSIDESCROLLER_API AEnemy : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AEnemy();
 
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* VisualMesh;
 
-	UParticleSystemComponent* OurParticleSystem;
+	UPROPERTY(VisibleAnywhere)
+		UParticleSystemComponent* OurParticleSystem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FloatingActor")
 		float FloatSpeed = 20.0f;
@@ -26,11 +28,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FloatingActor")
 		float RotationSpeed = 20.0f;
 
+	UPROPERTY(VisibleAnywhere)
+		USphereComponent* CollisionSphere;
 protected:
+
+	float sphereRadius;
+
+	/*UFUNCTION()
+		void OnHit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);*/
+
+	UFUNCTION()
+		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

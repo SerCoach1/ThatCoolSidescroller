@@ -7,12 +7,26 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Engine.h"
-
+#include "UObject/ConstructorHelpers.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "TimerManager.h"
 
 AThatCoolSideScrollerCharacter::AThatCoolSideScrollerCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+
+	// Create a particle system that we can activate or deactivate
+	PlayerParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MovementParticles"));
+	PlayerParticles->SetupAttachment(GetCapsuleComponent());
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/StarterContent/Particles/P_Fire.P_Fire"));
+	if (ParticleAsset.Succeeded())
+	{
+		PlayerParticles->SetTemplate(ParticleAsset.Object);
+	}
 
 	// Don't rotate when the controller rotates.
 	bUseControllerRotationPitch = false;
@@ -25,8 +39,8 @@ AThatCoolSideScrollerCharacter::AThatCoolSideScrollerCharacter()
 	CameraBoom->SetUsingAbsoluteRotation(true); // Rotation of the character should not affect rotation of boom
 	CameraBoom->bDoCollisionTest = false;
 	CameraBoom->TargetArmLength = 500.f;
-	CameraBoom->SocketOffset = FVector(0.f,0.f,75.f);
-	CameraBoom->SetRelativeRotation(FRotator(0.f,180.f,0.f));
+	CameraBoom->SocketOffset = FVector(0.f, 0.f, 75.f);
+	CameraBoom->SetRelativeRotation(FRotator(0.f, 180.f, 0.f));
 
 	// Create a camera and attach to boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
@@ -49,12 +63,32 @@ AThatCoolSideScrollerCharacter::AThatCoolSideScrollerCharacter()
 	StaminaComponent = CreateDefaultSubobject<UStaminaComponent>(TEXT("StaminaComponent"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
+	IsOnFire = false;
+	FireDamage = 0.001;
+	FireDuration = 1.0f;
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
+void AThatCoolSideScrollerCharacter::SetOnFire()
+{
+	PlayerParticles->ActivateSystem();
+	IsOnFire = true;
+}
+
+void AThatCoolSideScrollerCharacter::PutOutFire()
+{
+	PlayerParticles->DeactivateSystem();
+	IsOnFire = false;
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,TEXT("PUT OUT FIRE"));
+}
+
+void AThatCoolSideScrollerCharacter::SetFireTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(FireTimer, this, &AThatCoolSideScrollerCharacter::PutOutFire, FireDuration, false);
+}
 
 void AThatCoolSideScrollerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -69,18 +103,26 @@ void AThatCoolSideScrollerCharacter::SetupPlayerInputComponent(class UInputCompo
 
 void AThatCoolSideScrollerCharacter::Jump()
 {
-
 	//AThatCoolSideScrollerCharacter::FindComponentByClass<UStaminaComponent>() //that's how to find component
-
 	if (StaminaComponent->StaminaJumpCost(GetCharacterMovement()->IsFalling()) && StaminaComponent != nullptr) {
 		ACharacter::Jump();
 	}
 }
 
+void AThatCoolSideScrollerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (IsOnFire) {
+		HealthComponent->ApplyDamage(FireDamage);
+	}
+
+}
+
 void AThatCoolSideScrollerCharacter::MoveRight(float Value)
 {
 	// add movement in that direction
-	AddMovementInput(FVector(0.f,-1.f,0.f), Value);
+	AddMovementInput(FVector(0.f, -1.f, 0.f), Value);
 }
 
 void AThatCoolSideScrollerCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)

@@ -9,22 +9,22 @@
 #include "ThatCoolSideScrollerCharacter.generated.h"
 
 
-UCLASS(config=Game)
+UCLASS(config = Game)
 class AThatCoolSideScrollerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	/** Side view camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* SideViewCameraComponent;
+		/** Side view camera */
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class UCameraComponent* SideViewCameraComponent;
 
 	/** Camera boom positioning the camera beside the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+		class USpringArmComponent* CameraBoom;
 
 	/** Player's Stamina */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stamina, meta = (AllowPrivateAccess = "true"))
-	class UStaminaComponent* StaminaComponent;
+		class UStaminaComponent* StaminaComponent;
 
 	/** Player's Health */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stamina, meta = (AllowPrivateAccess = "true"))
@@ -50,11 +50,32 @@ protected:
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
 	UStaminaComponent* staminaReference;*/
 
+	UPROPERTY(VisibleAnywhere)
+		UParticleSystemComponent* PlayerParticles;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float FireDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float FireDuration;
+
+	virtual void Tick(float DeltaTime) override;
+
 public:
 	AThatCoolSideScrollerCharacter();
+
+	void SetOnFire();
+	void PutOutFire();
+	void SetFireTimer();
 
 	/** Returns SideViewCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+private:
+
+	//TODO: Separate into 'status effect' class?
+	bool IsOnFire;
+
+	FTimerHandle FireTimer;
 };

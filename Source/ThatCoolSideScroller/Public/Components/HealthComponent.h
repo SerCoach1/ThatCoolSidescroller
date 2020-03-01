@@ -19,6 +19,8 @@ public:
 	UFUNCTION()
 	void TakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+	void ApplyDamage(float damage);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

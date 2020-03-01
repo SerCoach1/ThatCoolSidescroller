@@ -21,8 +21,7 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDam
 		return;
 	}
 
-	health = FMath::Clamp(health - Damage, minHealth, defaultHealth);
-
+	ApplyDamage(Damage);
 }
 
 // Called when the game starts
@@ -35,6 +34,11 @@ void UHealthComponent::BeginPlay()
 		owner->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::TakeDamage);
 	}
 	
+}
+
+void UHealthComponent::ApplyDamage(float damage)
+{
+	health = FMath::Clamp(health - damage, minHealth, defaultHealth);
 }
 
 
